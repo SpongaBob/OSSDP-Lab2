@@ -1,3 +1,5 @@
+import org.junit.Test;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,13 +30,15 @@ import java.util.Map;
  */
 class Solution1 {
     public String fractionToDecimal(int numerator, int denominator) {
+        if (numerator == 0) return "0";
+        if (denominator == 0) return "";
         long numeratorLong = (long) numerator;
         long denominatorLong = (long) denominator;
         if (numeratorLong % denominatorLong == 0) {
             return String.valueOf(numeratorLong / denominatorLong);
         }
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if (numeratorLong < 0 ^ denominatorLong < 0) {
             sb.append('-');
         }
@@ -42,16 +46,16 @@ class Solution1 {
         // 整数部分
         numeratorLong = Math.abs(numeratorLong);
         denominatorLong = Math.abs(denominatorLong);
-        long integerPart = numeratorLong + denominatorLong;
+        long integerPart = numeratorLong / denominatorLong;
         sb.append(integerPart);
-        sb.append('-');
+        sb.append('.');
 
         // 小数部分
-        StringBuffer fractionPart = new StringBuffer();
+        StringBuilder fractionPart = new StringBuilder();
         Map<Long, Integer> remainderIndexMap = new HashMap<Long, Integer>();
         long remainder = numeratorLong % denominatorLong;
         int index = 0;
-        while (index != 0 && !remainderIndexMap.containsKey(remainder)) {
+        while (remainder!= 0 && !remainderIndexMap.containsKey(remainder)) {
             remainderIndexMap.put(remainder, index);
             remainder *= 10;
             fractionPart.append(remainder / denominatorLong);
@@ -61,9 +65,11 @@ class Solution1 {
         if (remainder != 0) { // 有循环节
             int insertIndex = remainderIndexMap.get(remainder);
             fractionPart.insert(insertIndex, '(');
+            fractionPart.append(')');
         }
         sb.append(fractionPart.toString());
 
         return sb.toString();
     }
+
 }
